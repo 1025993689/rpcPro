@@ -1,0 +1,26 @@
+<configuration>
+    <!-- 定义文件 Appender 使用 TimeBasedRollingPolicy -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 设置日志文件路径和基本名称 -->
+        <file>logs/app.log</file>
+
+        <!-- 定义日志输出格式 -->
+        <encoder>
+            <pattern>%date %level [%thread] %class.%method:%line %logger{10} - %msg%n</pattern>
+        </encoder>
+
+        <!-- 配置滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 设置滚动后的文件名格式，这里按照天进行分割 -->
+            <fileNamePattern>logs/netty.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- 可选：配置保留历史日志的最大天数 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 配置根 Logger，将文件 Appender 关联到根 Logger -->
+    <root level="info">
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
