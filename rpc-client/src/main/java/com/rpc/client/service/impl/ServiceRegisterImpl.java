@@ -1,5 +1,6 @@
 package com.rpc.client.service.impl;
 
+import com.rpc.client.handler.ClientHandler;
 import com.rpc.client.service.ServiceRegitser;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -10,7 +11,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 public class ServiceRegisterImpl implements ServiceRegitser {
@@ -30,6 +30,7 @@ public class ServiceRegisterImpl implements ServiceRegitser {
                             // 添加编解码器，这里以字符串为例
                             socketChannel.pipeline().addLast(new StringDecoder());
                             socketChannel.pipeline().addLast(new StringEncoder());
+                            socketChannel.pipeline().addLast(new ClientHandler());
                         }
                     });
 

@@ -13,10 +13,19 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 默认的注册中心工厂实现类，基于 Netty 实现一个简单的 TCP 服务器。
  */
 public class DefaultRegisterCenterFactoryImpl implements RegisterCenterFactory {
+
+    public Map<String, String> getServiceAddressMap() {
+        return serviceAddressMap;
+    }
+
+    private Map<String, String> serviceAddressMap = new HashMap<>();
     @Override
     public void start(Integer port) {
         // 创建两个 NioEventLoopGroup，分别用于处理 Boss 任务（接受连接）和 Worker 任务（处理 I/O 事件）
@@ -30,7 +39,6 @@ public class DefaultRegisterCenterFactoryImpl implements RegisterCenterFactory {
             // 设置事件循环组，使用 NioServerSocketChannel 作为服务器的通道类型
             ChannelFuture channelFuture = bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-
                     // 设置子通道（即每个新接受的连接）的处理器链，这里添加了 StringDecoder 和 StringEncoder 用于处理字符串消息
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -40,13 +48,14 @@ public class DefaultRegisterCenterFactoryImpl implements RegisterCenterFactory {
                             socketChannel.pipeline().addLast(new StringEncoder());
                         }
                     })
-
                     // 设置服务器选项，SO_BACKLOG 控制了全连接队列的最大长度，防止过快的连接请求导致拒绝服务
                     .option(ChannelOption.SO_BACKLOG, 128)
-
                     // 绑定到指定端口并同步等待服务器启动完成
                     .bind(port).sync();
 
+
+            //设置一些新的消息
+            serviceAddressMap.put("msg1", "success");
 
 
             // 输出服务器启动信息
